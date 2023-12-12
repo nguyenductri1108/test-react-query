@@ -1,0 +1,6 @@
+{
+    "data": [
+        { "name": "a", "price": 1 },
+        { "name": "b", "price": 2 }
+    ]
+}
