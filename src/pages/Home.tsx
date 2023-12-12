@@ -3,17 +3,12 @@ import { useQuery } from "react-query";
 import { useDispatch } from "react-redux";
 import { HomeAction } from "../redux/slices/home";
 import { useAppSelector } from "../redux/store";
-
-export interface IPost {
-    name: string;
-    price: number;
-}
-
-const getPost: () => Promise<IPost[]> = async () => {
-    return axios
-        .get("http://localhost:3500/data")
-        .then((response) => response.data);
-};
+import {
+    getUser,
+    useQueryEmployeeAfterUser,
+    useQuerySomethingAfterGetUser,
+} from "../ApiHooks/homepage";
+import { useState } from "react";
 
 const asyncAdd =
     (amount: number) => (dispatch: ReturnType<typeof useDispatch>) => {
@@ -29,7 +24,14 @@ const Home: React.FC = () => {
     const { count, err, isLoading } = useAppSelector(
         (state) => state.homeSlice
     );
-    const fetchPost = useQuery(["post"], getPost, { staleTime: 3000 });
+    const [state, setState] = useState<number>(0);
+
+    const a = useQuery(["hehe", state], getUser);
+    const fetchEmployee = useQuerySomethingAfterGetUser({
+        queryKeys: ["employee"],
+        queryFn: getUser,
+    });
+    console.log(fetchEmployee);
     return (
         <>
             <h1>HomePage</h1>
@@ -40,6 +42,13 @@ const Home: React.FC = () => {
                 }}
             >
                 increment
+            </button>
+            <button
+                onClick={() => {
+                    setState((prev) => prev + 1);
+                }}
+            >
+                test cache
             </button>
             <button
                 onClick={() => {

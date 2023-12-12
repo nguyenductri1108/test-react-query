@@ -1,6 +1,10 @@
 {
-    "data": [
-        { "name": "a", "price": 1 },
-        { "name": "b", "price": 2 }
+    "user": [
+        { "name": "tri1", "age": 18, "id": 1 },
+        { "name": "tri2", "age": 20, "id": 2 }
+    ],
+    "employee": [
+        { "name": "tri1", "class": "fresher", "id": 1 },
+        { "name": "tri2", "class": "junior", "id": 2 }
     ]
 }
