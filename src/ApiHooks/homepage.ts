@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useQuery } from "react-query";
+import { QueryFunction, QueryOptions, useQuery } from "react-query";
 
 enum SKILL_CLASS {
     "FRESHER",
@@ -48,8 +48,8 @@ export const useQuerySomethingAfterGetUser = ({
     config,
 }: {
     queryKeys: Array<any>;
-    queryFn: () => {};
-    config?: Object;
+    queryFn: QueryFunction
+    config?: QueryOptions;
 }) => {
     const { data, isFetching } = useQuery(["user"], getUser);
 
