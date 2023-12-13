@@ -26,9 +26,9 @@ const Home: React.FC = () => {
     );
     const [state, setState] = useState<number>(0);
 
-    const a = useQuery(["hehe", state], getUser,{});
+    // const a = useQuery({queryKey:['a'], queryFn: ()=>{}, });
     const fetchEmployee = useQuerySomethingAfterGetUser({
-        queryKeys: ["employee"],
+        queryKey: ["employee"],
         queryFn: getUser,
         config: {}
     });

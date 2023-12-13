@@ -26,11 +26,19 @@ export const getUser: () => Promise<IUser[]> = async () => {
         .then((response) => response.data);
 };
 
-const getEmployee: () => Promise<IEmployee[]> = async () => {
+export const getEmployee: () => Promise<IEmployee[]> = async () => {
     return axios
         .get("http://localhost:3500/employee")
         .then((response) => response.data);
 };
+
+export const getUserById : (id:string) => Promise<IUser> = async (id) => {
+    return axios.get(`http://localhost:3500/user/${id}`).then((response) => response.data);
+}
+
+export const addUser: (user:Omit<IUser, 'id'>) => Promise<IUser> = async (user) => {
+    return axios.post(`http://localhost:3500/user`, user).then((response) => response.data);
+}
 
 export const useQueryEmployeeAfterUser = () => {
     const { data, isFetching } = useQuery(["user"], getUser);
@@ -43,17 +51,19 @@ export const useQueryEmployeeAfterUser = () => {
 };
 
 export const useQuerySomethingAfterGetUser = ({
-    queryKeys,
+    queryKey,
     queryFn,
     config,
 }: {
-    queryKeys: Array<any>;
+    queryKey: Array<any> | string;
     queryFn: QueryFunction
-    config?: QueryOptions;
+    config?: Omit<QueryOptions , 'enabled'>;
 }) => {
-    const { data, isFetching } = useQuery(["user"], getUser);
+    const { data, isFetching } = useQuery(["user"], getUser, {retry: 3});
+    console.log(data)
 
-    return useQuery([...queryKeys], queryFn, config);
+    return useQuery({queryKey, queryFn, ...config, enabled: !!data && !isFetching})
+    // return useQuery([...queryKey], queryFn, config);
 };
 
 // export const useIsTokenValid = () => {
