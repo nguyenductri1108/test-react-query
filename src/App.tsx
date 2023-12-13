@@ -20,8 +20,11 @@ function App() {
                             <Link to={"users"}>User</Link>
                         </li>
                         <li>
-                            <Link to={"dynamic-parallel-queries"}>DPQueries</Link>
-                        </li><li>
+                            <Link to={"dynamic-parallel-queries"}>
+                                DPQueries
+                            </Link>
+                        </li>
+                        <li>
                             <Link to={"mutateData"}>Mutation</Link>
                         </li>
                     </ul>
@@ -31,11 +34,14 @@ function App() {
 
                     <Route path="/users" element={<User />} />
 
-                    <Route path="/dynamic-parallel-queries" element={<DPQueries id={[1,3,4]} />} />
+                    <Route
+                        path="/dynamic-parallel-queries"
+                        element={<DPQueries ids={["1", "3", "4"]} />}
+                    />
 
                     <Route path="/user-detail/:id" element={<UserDetail />} />
 
-                    <Route path="/mutateData" element={<MutationPage />}/>
+                    <Route path="/mutateData" element={<MutationPage />} />
                 </Routes>
             </BrowserRouter>
         </div>
