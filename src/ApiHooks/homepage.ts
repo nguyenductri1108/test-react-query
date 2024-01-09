@@ -1,5 +1,14 @@
-import axios from "axios";
-import { QueryFunction, QueryOptions, useQuery } from "react-query";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
+import {
+    Query,
+    QueryFunction,
+    QueryKey,
+    QueryOptions,
+    UndefinedInitialDataOptions,
+    UseQueryResult,
+    useQueries,
+    useQuery,
+} from "@tanstack/react-query";
 
 enum SKILL_CLASS {
     "FRESHER",
@@ -46,12 +55,51 @@ export const addUser: (user: Omit<IUser, "id">) => Promise<IUser> = async (
         .then((response) => response.data);
 };
 
-export const useQueryEmployeeAfterUser = () => {
-    const { data, isFetching } = useQuery(["user"], getUser);
+export const fetchUserPage = (page: number, limit: number) => {
+    return axios
+        .get(`http://localhost:3500/user?_page=${page}&_limit=${limit}`)
+        .then((response) => response.data);
+};
 
-    const EmployeeApi = useQuery(["employee"], getEmployee, {
+export const fetchUserPageQuery: (meta: {
+    _page: number;
+    _limit: number;
+}) => UndefinedInitialDataOptions<IUser[], unknown> = ({ _page, _limit }) => {
+    return {
+        queryKey: ["fetchUserPage", _page, _limit],
+        queryFn: fetchUserPage as unknown as QueryFunction<
+            IUser[],
+            QueryKey,
+            never
+        >,
+        staleTime: 60 * 1000,
+    };
+};
+
+export const usePrefetchUserPageQuery = (
+    page: number,
+    limit: number,
+    max: number
+): UseQueryResult<IUser[], unknown> => {
+    const a = [];
+    page > 1 && a.push(fetchUserPageQuery({ _page: page - 1, _limit: limit }));
+    page < max &&
+        a.push(fetchUserPageQuery({ _page: page + 1, _limit: limit }));
+    const prefetch = useQueries({ queries: a as any });
+
+    return useQuery(fetchUserPageQuery({ _page: page, _limit: limit }));
+};
+
+export const useQueryEmployeeAfterUser = () => {
+    const { data, isFetching } = useQuery({
+        queryKey: ["user"],
+        queryFn: getUser,
+    });
+
+    const EmployeeApi = useQuery({
+        queryKey: ["employee"],
+        queryFn: getEmployee,
         enabled: !!data && !isFetching,
-        onError: (err) => {},
     });
 
     return EmployeeApi;
@@ -62,11 +110,15 @@ export const useQuerySomethingAfterGetUser = ({
     queryFn,
     config,
 }: {
-    queryKey: Array<any> | string;
+    queryKey: Array<any>;
     queryFn: QueryFunction;
     config?: Omit<QueryOptions, "enabled">;
 }) => {
-    const { data, isFetching } = useQuery(["user"], getUser, { retry: 3 });
+    const { data, isFetching } = useQuery({
+        queryKey: ["user"],
+        queryFn: getUser,
+        retry: 3,
+    });
     console.log(data);
 
     return useQuery({

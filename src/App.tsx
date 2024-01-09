@@ -1,11 +1,11 @@
-import { Route, Router, Routes } from "react-router";
-import { BrowserRouter, Link, NavLink } from "react-router-dom";
+import { Route, Routes } from "react-router";
+import { BrowserRouter, Link } from "react-router-dom";
 import "./App.css";
+import DPQueries from "./pages/DP-Queries";
 import Home from "./pages/Home";
 import MutationPage from "./pages/Mutation";
-import User from "./pages/Users";
-import DPQueries from "./pages/DP-Queries";
 import UserDetail from "./pages/User-Detail";
+import User from "./pages/Users";
 
 function App() {
     return (
